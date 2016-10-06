@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html ng-app="ListaTelefonica">
+
+<head>
+    <meta charset="utf-8">
+    <title>Lista de Telefones</title>
+
+    <script src="js/angular.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/contatoController.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/contatos.css" />
+    <script>
+
+    </script>
+</head>
+
+<body ng-controller="ListaTelefonicaController">
+    <div class="jumbotron">
+        <h3>{{mensagem}}</h3>
+        <input type="text" class="form-control" ng-model="criterioBusca" placeholder="Digite o nome que deseja buscar" />
+        <table class="table table-striped">
+            <tr ng-show="contatos.length > 0">
+                <th>
+                </th>
+                <th>
+                    <a href="" ng-click="ordenarPor('nome')">Nome</a>
+                </th>
+                <th>
+                    Telefone
+                </th>
+                <th>
+                    <a href="" ng-click="ordenarPor('categoria.nome')">Categoria</a>
+                </th>
+                <th>
+                    Classificação
+                </th>
+            </tr>
+            <tr ng-class="{'selecionado negrito': contato.selecionado}" ng-repeat="contato in contatos | filter:{nome:criterioBusca} | orderBy: criterioOrdenacaoContatos:direcaoOrdenacaoContatos">
+                <td>
+                    <input type="checkbox" ng-model="contato.selecionado" />
+                </td>
+                <td>
+                    {{contato.nome | uppercase}}
+                </td>
+                <td>
+                    {{contato.telefone}}
+                </td>
+                <td>
+                    {{contato.categoria.nome}}
+                </td>
+                <td>
+                    {{contato.categoria.classificacao | lowercase}}
+                </td>
+            </tr>
+        </table>
+        <hr /> É válido: {{contatoForm.$valid}}
+        <form name="contatoForm">
+            <input class="form-control" type="text" ng-model="contato.nome" name="nome" placeholder="Nome" required="true" />
+            <input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone" required="true" />
+            <select class="form-control" ng-model="contato.categoria" ng-options="categoria.nome group by categoria.classificacao for categoria in categorias | orderBy: 'nome' ">
+                <option value="">
+                    Selecione uma categoria
+                </option>
+            </select>
+        </form>
+        <div ng-show="contatoForm.nome.$invalid && contatoForm.nome.$dirty" class="alert alert-danger">
+            Por favor, preencha o nome!
+        </div>
+        <button class="btn btn-primary btn-block" ng-disabled="!contato.nome || !contato.telefone" ng-click="salvar(contato)">Adicionar</button>
+        <button ng-if="isSelecionados(contatos)" class="btn btn-danger btn-block" ng-click="excluir(contatos)">Excluir</button>
+    </div>
+</body>
+
+<div ng-include="'rodape.html'"></div>
+
+</html>
